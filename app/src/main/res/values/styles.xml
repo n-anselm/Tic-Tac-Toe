@@ -10,4 +10,6 @@
         <item name="android:windowLightStatusBar">true</item>
     </style>
 
+    <style name="PopupMenuStyle" parent="Theme.AppCompat.Light.NoActionBar"></style>
+
 </resources>

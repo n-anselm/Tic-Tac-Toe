@@ -4,7 +4,6 @@
     <color name="colorPrimary2">#155C91</color>
     <color name="colorPrimaryDark1">#1976D2</color>
     <color name="colorPrimaryDark2">#303F9F</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorAccent">#155C91</color>
 
-<!--    colorPrimary2 #303F9F-->
 </resources>
