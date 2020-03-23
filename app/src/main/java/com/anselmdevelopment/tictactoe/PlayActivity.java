@@ -827,6 +827,51 @@ public class PlayActivity extends AppCompatActivity {
             setOWinnerText();
         } else if (x1 != 0 && x2 != 0 && x3 != 0 && x4 != 0 && x5 != 0 && x6 != 0 && x7 != 0 &&
                 x8 != 0 && x9 != 0) {
+            if (x1 == 1) {
+                iv1.setImageResource(R.drawable.x_yellow);
+            } else {
+                iv1.setImageResource(R.drawable.o_yellow);
+            }
+            if (x2 == 1) {
+                iv2.setImageResource(R.drawable.x_yellow);
+            } else {
+                iv2.setImageResource(R.drawable.o_yellow);
+            }
+            if (x3 == 1) {
+                iv3.setImageResource(R.drawable.x_yellow);
+            } else {
+                iv3.setImageResource(R.drawable.o_yellow);
+            }
+            if (x4 == 1) {
+                iv4.setImageResource(R.drawable.x_yellow);
+            } else {
+                iv4.setImageResource(R.drawable.o_yellow);
+            }
+            if (x5 == 1) {
+                iv5.setImageResource(R.drawable.x_yellow);
+            } else {
+                iv5.setImageResource(R.drawable.o_yellow);
+            }
+            if (x6 == 1) {
+                iv6.setImageResource(R.drawable.x_yellow);
+            } else {
+                iv6.setImageResource(R.drawable.o_yellow);
+            }
+            if (x7 == 1) {
+                iv7.setImageResource(R.drawable.x_yellow);
+            } else {
+                iv7.setImageResource(R.drawable.o_yellow);
+            }
+            if (x8 == 1) {
+                iv8.setImageResource(R.drawable.x_yellow);
+            } else {
+                iv8.setImageResource(R.drawable.o_yellow);
+            }
+            if (x9 == 1) {
+                iv9.setImageResource(R.drawable.x_yellow);
+            } else {
+                iv9.setImageResource(R.drawable.o_yellow);
+            }
             gameOver = true;
             if (!player1.toString().contains("won")) {
                 setDrawText();
