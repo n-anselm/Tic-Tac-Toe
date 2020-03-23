@@ -24,8 +24,9 @@ import com.appizona.yehiahd.fastsave.FastSave;
 public class PlayActivity extends AppCompatActivity {
 
     EditText mPlayer1, mPlayer2;
-    TextView player1, vs, player2;
+    TextView player1, vs, player2, score1, score2;
     String playerName1, playerName2;
+    int player1Score, player2Score;
     int x1, x2, x3, x4, x5, x6, x7, x8, x9;
     boolean i1 = false;
     boolean i2 = false;
@@ -41,12 +42,17 @@ public class PlayActivity extends AppCompatActivity {
     ImageView iv1, iv2, iv3, iv4, iv5, iv6, iv7, iv8, iv9;
     TextView reset, newGame;
     private LayoutInflater inflater;
-    RelativeLayout bottomBar, bottomBar2;
-    FrameLayout optionsArrowUp, optionsArrowUp2;
+    RelativeLayout bottomBar;
+    FrameLayout optionsArrowUp;
 
+    public static final String PLAYER1 = "player1name";
+    public static final String PLAYER2 = "player2name";
+    public static final String SCORE1 = "score1x";
+    public static final String SCORE2 = "score2o";
     public static final String DARKMODE = "darkmode";
     public static final String RESTART = "restart";
     public static final String DISTRACTIONFREEMODE = "distractionfreemode";
+    public static final String TIMESPLAYED = "timesplayed";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +64,8 @@ public class PlayActivity extends AppCompatActivity {
         player1 = findViewById(R.id.tv_player1);
         player2 = findViewById(R.id.tv_player2);
         vs = findViewById(R.id.tv_vs);
+        score1 = findViewById(R.id.tv_score1);
+        score2 = findViewById(R.id.tv_score2);
         iv1 = findViewById(R.id.iv1);
         iv2 = findViewById(R.id.iv2);
         iv3 = findViewById(R.id.iv3);
@@ -74,6 +82,7 @@ public class PlayActivity extends AppCompatActivity {
 
         alertDialog(); // Show the alertdialog
         checkDistractionFreeMode();
+        setPlayerNamesOnRestart();
 
         optionsArrowUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,6 +149,9 @@ public class PlayActivity extends AppCompatActivity {
                             } else if (id == R.id.action_reset) {
                                 reset();
                             } else if (id == R.id.action_new_game) {
+                                FastSave.getInstance().saveInt(SCORE1, 0);
+                                FastSave.getInstance().saveInt(SCORE2, 0);
+                                FastSave.getInstance().saveInt(TIMESPLAYED, 0);
                                 setNewGame();
                             }
                             return false;
@@ -158,7 +170,6 @@ public class PlayActivity extends AppCompatActivity {
                         setX(1);
                         xo = "x";
                         x1 = 1;
-                        checkIfThreeInRow();
                     } else if (xo.equals("x")) {
                         setO(1);
                         xo = "o";
@@ -333,6 +344,9 @@ public class PlayActivity extends AppCompatActivity {
         newGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FastSave.getInstance().saveInt(SCORE1, 0);
+                FastSave.getInstance().saveInt(SCORE2, 0);
+                FastSave.getInstance().saveInt(TIMESPLAYED, 0);
                 setNewGame();
             }
         });
@@ -361,19 +375,52 @@ public class PlayActivity extends AppCompatActivity {
             mPlayer1 = (EditText) v.findViewById(R.id.et_player1);
             mPlayer2 = (EditText) v.findViewById(R.id.et_player2);
 
+            String p1 = FastSave.getInstance().getString(PLAYER1, "");
+            String p2 = FastSave.getInstance().getString(PLAYER2, "");
+            if (!p1.isEmpty() && !p2.isEmpty()) {
+                mPlayer1.setText(p1);
+                mPlayer2.setText(p2);
+            }
+
             mBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
                     playerName1 = mPlayer1.getText().toString();
                     playerName2 = mPlayer2.getText().toString();
-                    if (!playerName1.isEmpty() && !playerName2.isEmpty()) {
+                    FastSave.getInstance().saveString(PLAYER1, playerName1);
+                    FastSave.getInstance().saveString(PLAYER2, playerName2);
+                    if (!playerName1.isEmpty() && !playerName2.isEmpty() &&
+                            !FastSave.getInstance().getBoolean(DISTRACTIONFREEMODE, false)) {
                         player1.setText(playerName1 + " (X)");
                         player2.setText(playerName2 + " (O)");
                         vs.setVisibility(View.VISIBLE);
+                    } else if (playerName1.isEmpty()) {
+                        player1.setText(null);
+                        player2.setText(null);
+                        vs.setVisibility(View.GONE);
                     }
+                    score1.setText(null);
+                    score2.setText(null);
                 }
             });
             mBuilder.show();
+        }
+    }
+
+    /*
+    Redisplay the player names if the activity is restarted to change to dark or light mode
+     */
+    public void setPlayerNamesOnRestart() {
+        if (!FastSave.getInstance().getBoolean(RESTART, false) &&
+                !FastSave.getInstance().getBoolean(DISTRACTIONFREEMODE, false)) {
+            if (!FastSave.getInstance().getString(PLAYER1, "").isEmpty()) {
+                player1.setText(FastSave.getInstance().getString(PLAYER1, "") + " (X)");
+                player2.setText(FastSave.getInstance().getString(PLAYER2, "") + " (O)");
+                vs.setVisibility(View.VISIBLE);
+            }
+            if (!(FastSave.getInstance().getInt(TIMESPLAYED, 0) == 0)) {
+                setPlayerScoresText();
+            }
         }
     }
 
@@ -382,8 +429,13 @@ public class PlayActivity extends AppCompatActivity {
      */
     public void toggleDistractionFreeMode() {
         if (!FastSave.getInstance().getBoolean(DISTRACTIONFREEMODE, false)) {
+            player1.setText(null);
+            player2.setText(null);
+            vs.setVisibility(View.GONE);
             reset.setVisibility(View.GONE);
             newGame.setVisibility(View.GONE);
+            score1.setVisibility(View.GONE);
+            score2.setVisibility(View.GONE);
             if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
                 bottomBar.setBackgroundResource(android.R.color.black);
             } else {
@@ -391,8 +443,15 @@ public class PlayActivity extends AppCompatActivity {
             }
             FastSave.getInstance().saveBoolean(DISTRACTIONFREEMODE, true);
         } else {
+            player1.setText(FastSave.getInstance().getString(PLAYER1, "") + " (X)");
+            player2.setText(FastSave.getInstance().getString(PLAYER2, "") + " (O)");
+            player1.setVisibility(View.VISIBLE);
+            player2.setVisibility(View.VISIBLE);
+            vs.setVisibility(View.VISIBLE);
             reset.setVisibility(View.VISIBLE);
             newGame.setVisibility(View.VISIBLE);
+            score1.setVisibility(View.VISIBLE);
+            score2.setVisibility(View.VISIBLE);
             if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
                 bottomBar.setBackgroundResource(R.color.colorGrayDark);
             } else {
@@ -406,6 +465,8 @@ public class PlayActivity extends AppCompatActivity {
         if (FastSave.getInstance().getBoolean(DISTRACTIONFREEMODE, false)) {
             reset.setVisibility(View.GONE);
             newGame.setVisibility(View.GONE);
+            score1.setVisibility(View.GONE);
+            score2.setVisibility(View.GONE);
             if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
                 bottomBar.setBackgroundResource(android.R.color.black);
             } else {
@@ -421,12 +482,21 @@ public class PlayActivity extends AppCompatActivity {
         xo = "o";
         gameOver = false;
 
+        if (player1.toString().contains("won")) {
+            Intent i = new Intent(PlayActivity.this, PlayActivity.class);
+            startActivity(i);
+        }
+
         player1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
         if (playerName1 == null && playerName2 == null || playerName1.isEmpty() && playerName2.isEmpty()) {
             player1.setText(null);
             player2.setText(null);
             player1.setVisibility(View.VISIBLE);
             player2.setVisibility(View.VISIBLE);
+        } else if (FastSave.getInstance().getBoolean(DISTRACTIONFREEMODE, false)) {
+            player1.setText(null);
+            player2.setText(null);
+            vs.setVisibility(View.GONE);
         } else {
             player1.setText(playerName1 + " (X)");
             player2.setText(playerName2 + " (O)");
@@ -599,6 +669,14 @@ public class PlayActivity extends AppCompatActivity {
         } else {
             player1.setText(playerName1 + " won!");
         }
+        player1Score = FastSave.getInstance().getInt(SCORE1, 0);
+        player1Score = player1Score + 1;
+        FastSave.getInstance().saveInt(SCORE1, player1Score);
+        setPlayerScoresText();
+
+        int timesPlayed = FastSave.getInstance().getInt(TIMESPLAYED, 0);
+        timesPlayed = timesPlayed + 1;
+        FastSave.getInstance().saveInt(TIMESPLAYED, timesPlayed);
     }
 
     /*
@@ -613,6 +691,35 @@ public class PlayActivity extends AppCompatActivity {
         } else {
             player1.setText(playerName2 + " won!");
         }
+        player2Score = FastSave.getInstance().getInt(SCORE2, 0);
+        player2Score = player2Score + 1;
+        FastSave.getInstance().saveInt(SCORE2, player2Score);
+        setPlayerScoresText();
+
+        int timesPlayed = FastSave.getInstance().getInt(TIMESPLAYED, 0);
+        timesPlayed = timesPlayed + 1;
+        FastSave.getInstance().saveInt(TIMESPLAYED, timesPlayed);
+    }
+
+    public void setDrawText() {
+        player2.setVisibility(View.GONE);
+        vs.setVisibility(View.GONE);
+        player1.setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+        player1.setText("Draw!");
+        setPlayerScoresText();
+
+        int timesPlayed = FastSave.getInstance().getInt(TIMESPLAYED, 0);
+        timesPlayed = timesPlayed + 1;
+        FastSave.getInstance().saveInt(TIMESPLAYED, timesPlayed);
+    }
+
+    public void setPlayerScoresText() {
+        playerName1 = FastSave.getInstance().getString(PLAYER1, "");
+        playerName2 = FastSave.getInstance().getString(PLAYER2, "");
+        int x = FastSave.getInstance().getInt(SCORE1, 0);
+        int o = FastSave.getInstance().getInt(SCORE2, 0);
+        score1.setText(playerName1 + ": " + x + " points");
+        score2.setText(playerName2 + ": " + o + " points");
     }
 
     /*
@@ -718,6 +825,12 @@ public class PlayActivity extends AppCompatActivity {
             iv7.setImageResource(R.drawable.o_red);
             gameOver = true;
             setOWinnerText();
+        } else if (x1 != 0 && x2 != 0 && x3 != 0 && x4 != 0 && x5 != 0 && x6 != 0 && x7 != 0 &&
+                x8 != 0 && x9 != 0) {
+            gameOver = true;
+            if (!player1.toString().contains("won")) {
+                setDrawText();
+            }
         }
     }
 }

@@ -9,6 +9,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.appizona.yehiahd.fastsave.FastSave;
 
 import static com.anselmdevelopment.tictactoe.PlayActivity.DARKMODE;
+import static com.anselmdevelopment.tictactoe.PlayActivity.SCORE1;
+import static com.anselmdevelopment.tictactoe.PlayActivity.SCORE2;
+import static com.anselmdevelopment.tictactoe.PlayActivity.TIMESPLAYED;
 
 public class SplashScreen extends AppCompatActivity {
     @Override
@@ -26,6 +29,11 @@ public class SplashScreen extends AppCompatActivity {
                 finish();
             }
         }, secondsDelayed * 1250);
+
+        // Reset the player scores from the previous app launch
+        FastSave.getInstance().saveInt(SCORE1, 0);
+        FastSave.getInstance().saveInt(SCORE2, 0);
+        FastSave.getInstance().saveInt(TIMESPLAYED, 0);
     }
 
     public void checkTheme() {

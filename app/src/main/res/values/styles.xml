@@ -36,7 +36,7 @@
         <item name="colorDialog">@color/colorGrayMedium</item>
         <item name="colorMenu">@color/colorGrayDark</item>
         <item name="colorGray">@color/colorGrayDark</item>
-        <item name="textColor1">@android:color/white</item>
+        <item name="textColor1">@color/colorGrayLight</item>
         <item name="textColor2">@color/textColorGray</item>
         <item name="textColorBlue">@color/colorPrimary1</item>
         <item name="grid">@drawable/grid_blue_light</item>

@@ -20,7 +20,7 @@
     <item
         android:id="@+id/action_normal_mode"
         android:orderInCategory="3"
-        android:title="Normal mode"
+        android:title="Exit distraction free mode"
         app:showAsAction="never" />
 
     <item
