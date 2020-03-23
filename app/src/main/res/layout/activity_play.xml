@@ -289,30 +289,4 @@
 
     </RelativeLayout>
 
-    <!--    Menu for distraction free mode -->
-    <RelativeLayout
-        android:id="@+id/rl_bottom_bar_2"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginTop="64dp"
-        android:visibility="gone">
-
-        <FrameLayout
-            android:id="@+id/fl_chevron_up_2"
-            android:layout_width="56dp"
-            android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground">
-
-            <ImageView
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_gravity="center"
-                android:src="?attr/optionsArrow" />
-
-        </FrameLayout>
-
-    </RelativeLayout>
-
 </LinearLayout>

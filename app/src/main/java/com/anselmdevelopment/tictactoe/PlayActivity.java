@@ -43,7 +43,6 @@ public class PlayActivity extends AppCompatActivity {
     private LayoutInflater inflater;
     RelativeLayout bottomBar, bottomBar2;
     FrameLayout optionsArrowUp, optionsArrowUp2;
-    boolean isDistractionFreeMode;
 
     public static final String DARKMODE = "darkmode";
     public static final String RESTART = "restart";
@@ -71,11 +70,10 @@ public class PlayActivity extends AppCompatActivity {
         reset = findViewById(R.id.tv_reset);
         newGame = findViewById(R.id.tv_new_game);
         bottomBar = findViewById(R.id.rl_bottom_bar);
-        bottomBar2 = findViewById(R.id.rl_bottom_bar_2);
         optionsArrowUp = findViewById(R.id.fl_chevron_up);
-        optionsArrowUp2 = findViewById(R.id.fl_chevron_up_2);
 
         alertDialog(); // Show the alertdialog
+        checkDistractionFreeMode();
 
         optionsArrowUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,78 +83,69 @@ public class PlayActivity extends AppCompatActivity {
                 Context wrapper = new ContextThemeWrapper(PlayActivity.this, R.style.PopupMenuStyle);
                 final PopupMenu popupMenu = new PopupMenu(wrapper, optionsArrowUp);
 
-                // Inflate the popup menu using xml file
-                popupMenu.getMenuInflater().inflate(R.menu.menu_main, popupMenu.getMenu());
+                if (!FastSave.getInstance().getBoolean(DISTRACTIONFREEMODE, false)) {
+                    // Inflate the popup menu using xml file
+                    popupMenu.getMenuInflater().inflate(R.menu.menu_main, popupMenu.getMenu());
 
-                // Register popup with OnMenuItemClickListener
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        int id = item.getItemId();
-                        if (id == R.id.action_setchange_player_names) { // Set/change player names
-                            alertDialog();
-                        } else if (id == R.id.action_dark_mode) { // Dark mode
-                            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
-                                FastSave.getInstance().saveBoolean(DARKMODE, false);
-                                FastSave.getInstance().saveBoolean(RESTART, true);
-                            } else {
-                                FastSave.getInstance().saveBoolean(DARKMODE, true);
-                                FastSave.getInstance().saveBoolean(RESTART, true);
+                    // Register popup with OnMenuItemClickListener
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            int id = item.getItemId();
+                            if (id == R.id.action_setchange_player_names) { // Set/change player names
+                                alertDialog();
+                            } else if (id == R.id.action_dark_mode) { // Dark mode
+                                if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                                    FastSave.getInstance().saveBoolean(DARKMODE, false);
+                                    FastSave.getInstance().saveBoolean(RESTART, true);
+                                } else {
+                                    FastSave.getInstance().saveBoolean(DARKMODE, true);
+                                    FastSave.getInstance().saveBoolean(RESTART, true);
+                                }
+                                Intent restart = new Intent(PlayActivity.this, PlayActivity.class);
+                                startActivity(restart);
+                            } else if (id == R.id.action_normal_mode) { // Distraction free mode
+                                toggleDistractionFreeMode();
+                            } else if (id == R.id.action_about) {
+                                Intent aboutActivity = new Intent(PlayActivity.this, AboutActivity.class);
+                                startActivity(aboutActivity);
                             }
-                            Intent restart = new Intent(PlayActivity.this, PlayActivity.class);
-                            startActivity(restart);
-                        } else if (id == R.id.action_normal_mode) { // Distraction free mode
-                            toggleDistractionFreeMode();
-                        } else if (id == R.id.action_about) {
-                            Intent aboutActivity = new Intent(PlayActivity.this, AboutActivity.class);
-                            startActivity(aboutActivity);
+                            return false;
                         }
-                        return false;
-                    }
-                });
-                popupMenu.show();
-            }
-        });
+                    });
+                } else {
+                    // Inflate the popup menu using xml file
+                    popupMenu.getMenuInflater().inflate(R.menu.menu_main2, popupMenu.getMenu());
 
-        optionsArrowUp2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // Create instance of PopupMenu
-                Context wrapper = new ContextThemeWrapper(PlayActivity.this, R.style.PopupMenuStyle);
-                final PopupMenu popupMenu = new PopupMenu(wrapper, optionsArrowUp);
-
-                // Inflate the popup menu using xml file
-                popupMenu.getMenuInflater().inflate(R.menu.menu_main2, popupMenu.getMenu());
-
-                // Register popup with OnMenuItemClickListener
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        int id = item.getItemId();
-                        if (id == R.id.action_setchange_player_names) { // Set/change player names
-                            alertDialog();
-                            return true;
-                        } else if (id == R.id.action_dark_mode) { // Dark mode
-                            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
-                                FastSave.getInstance().saveBoolean(DARKMODE, false);
-                                FastSave.getInstance().saveBoolean(RESTART, true);
-                            } else {
-                                FastSave.getInstance().saveBoolean(DARKMODE, true);
-                                FastSave.getInstance().saveBoolean(RESTART, true);
+                    // Register popup with OnMenuItemClickListener
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            int id = item.getItemId();
+                            if (id == R.id.action_setchange_player_names) { // Set/change player names
+                                alertDialog();
+                                return true;
+                            } else if (id == R.id.action_dark_mode) { // Dark mode
+                                if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                                    FastSave.getInstance().saveBoolean(DARKMODE, false);
+                                    FastSave.getInstance().saveBoolean(RESTART, true);
+                                } else {
+                                    FastSave.getInstance().saveBoolean(DARKMODE, true);
+                                    FastSave.getInstance().saveBoolean(RESTART, true);
+                                }
+                                Intent restart = new Intent(PlayActivity.this, PlayActivity.class);
+                                startActivity(restart);
+                            } else if (id == R.id.action_normal_mode) { // Distraction free mode
+                                toggleDistractionFreeMode();
+                            } else if (id == R.id.action_reset) {
+                                reset();
+                            } else if (id == R.id.action_new_game) {
+                                setNewGame();
                             }
-                            Intent restart = new Intent(PlayActivity.this, PlayActivity.class);
-                            startActivity(restart);
-                        } else if (id == R.id.action_normal_mode) { // Distraction free mode
-                            toggleDistractionFreeMode();
-                        } else if (id == R.id.action_reset) {
-                            reset();
-                        } else if (id == R.id.action_new_game) {
-                            setNewGame();
+                            return false;
                         }
-                        return false;
-                    }
-                });
+                    });
+                }
                 popupMenu.show();
             }
         });
@@ -392,17 +381,37 @@ public class PlayActivity extends AppCompatActivity {
     Toggles distraction free mode
      */
     public void toggleDistractionFreeMode() {
-        isDistractionFreeMode = FastSave.getInstance().getBoolean(DISTRACTIONFREEMODE, false);
-        if (!isDistractionFreeMode) {
-            bottomBar.setVisibility(View.GONE);
-            bottomBar2.setVisibility(View.VISIBLE);
-            isDistractionFreeMode = true;
+        if (!FastSave.getInstance().getBoolean(DISTRACTIONFREEMODE, false)) {
+            reset.setVisibility(View.GONE);
+            newGame.setVisibility(View.GONE);
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                bottomBar.setBackgroundResource(android.R.color.black);
+            } else {
+                bottomBar.setBackgroundResource(android.R.color.white);
+            }
+            FastSave.getInstance().saveBoolean(DISTRACTIONFREEMODE, true);
         } else {
-            bottomBar2.setVisibility(View.GONE);
-            bottomBar.setVisibility(View.VISIBLE);
-            isDistractionFreeMode = false;
+            reset.setVisibility(View.VISIBLE);
+            newGame.setVisibility(View.VISIBLE);
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                bottomBar.setBackgroundResource(R.color.colorGrayDark);
+            } else {
+                bottomBar.setBackgroundResource(R.color.colorGrayLight);
+            }
+            FastSave.getInstance().saveBoolean(DISTRACTIONFREEMODE, false);
         }
+    }
 
+    public void checkDistractionFreeMode() {
+        if (FastSave.getInstance().getBoolean(DISTRACTIONFREEMODE, false)) {
+            reset.setVisibility(View.GONE);
+            newGame.setVisibility(View.GONE);
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                bottomBar.setBackgroundResource(android.R.color.black);
+            } else {
+                bottomBar.setBackgroundResource(android.R.color.white);
+            }
+        }
     }
 
     /*
