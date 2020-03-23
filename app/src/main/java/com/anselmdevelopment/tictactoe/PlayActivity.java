@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
@@ -38,7 +39,9 @@ public class PlayActivity extends AppCompatActivity {
     ImageView iv1, iv2, iv3, iv4, iv5, iv6, iv7, iv8, iv9;
     TextView reset, newGame;
     private LayoutInflater inflater;
-    FrameLayout optionsArrowUp;
+    RelativeLayout bottomBar, bottomBar2;
+    FrameLayout optionsArrowUp, optionsArrowUp2;
+    boolean isDistractionFreeMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,30 +62,12 @@ public class PlayActivity extends AppCompatActivity {
         iv9 = findViewById(R.id.iv9);
         reset = findViewById(R.id.tv_reset);
         newGame = findViewById(R.id.tv_new_game);
+        bottomBar = findViewById(R.id.rl_bottom_bar);
+        bottomBar2 = findViewById(R.id.rl_bottom_bar_2);
         optionsArrowUp = findViewById(R.id.fl_chevron_up);
+        optionsArrowUp2 = findViewById(R.id.fl_chevron_up_2);
 
-        inflater = PlayActivity.this.getLayoutInflater();
-        View v = inflater.inflate(R.layout.alertdialog, null);
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(PlayActivity.this);
-        mBuilder.setView(v)
-                .setNeutralButton("Skip", null);
-
-        mPlayer1 = (EditText) v.findViewById(R.id.et_player1);
-        mPlayer2 = (EditText) v.findViewById(R.id.et_player2);
-
-        mBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                playerName1 = mPlayer1.getText().toString();
-                playerName2 = mPlayer2.getText().toString();
-                if (!playerName1.isEmpty() && !playerName2.isEmpty()) {
-                    player1.setText(playerName1 + " (X)");
-                    player2.setText(playerName2 + " (O)");
-                    vs.setVisibility(View.VISIBLE);
-                }
-            }
-        });
-        mBuilder.show();
+        alertDialog(); // Show the alertdialog
 
         optionsArrowUp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,13 +85,51 @@ public class PlayActivity extends AppCompatActivity {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         int id = item.getItemId();
-                        if (id == R.id.one) {
-//
+                        if (id == R.id.action_setchange_player_names) { // Set/change player names
+                            alertDialog();
                             return true;
-                        } else if (id == R.id.two) {
-//
-                        } else if (id == R.id.three) {
-//
+                        } else if (id == R.id.action_dark_mode) { // Dark mode
+
+                        } else if (id == R.id.action_normal_mode) { // Distraction free mode
+                            toggleDistractionFreeMode();
+                        } else if (id == R.id.action_about) {
+                            Intent aboutActivity = new Intent(PlayActivity.this, AboutActivity.class);
+                            startActivity(aboutActivity);
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.show();
+            }
+        });
+
+        optionsArrowUp2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                // Create instance of PopupMenu
+                Context wrapper = new ContextThemeWrapper(PlayActivity.this, R.style.PopupMenuStyle);
+                final PopupMenu popupMenu = new PopupMenu(wrapper, optionsArrowUp);
+
+                // Inflate the popup menu using xml file
+                popupMenu.getMenuInflater().inflate(R.menu.menu_main2, popupMenu.getMenu());
+
+                // Register popup with OnMenuItemClickListener
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        int id = item.getItemId();
+                        if (id == R.id.action_setchange_player_names) { // Set/change player names
+                            alertDialog();
+                            return true;
+                        } else if (id == R.id.action_dark_mode) { // Dark mode
+
+                        } else if (id == R.id.action_normal_mode) { // Distraction free mode
+                            toggleDistractionFreeMode();
+                        } else if (id == R.id.action_reset) {
+                            reset();
+                        } else if (id == R.id.action_new_game) {
+                            setNewGame();
                         }
                         return false;
                     }
@@ -301,6 +324,47 @@ public class PlayActivity extends AppCompatActivity {
                 setNewGame();
             }
         });
+    }
+
+    public void alertDialog() {
+        inflater = PlayActivity.this.getLayoutInflater();
+        View v = inflater.inflate(R.layout.alertdialog, null);
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(PlayActivity.this);
+        mBuilder.setView(v)
+                .setNeutralButton("Skip", null);
+
+        mPlayer1 = (EditText) v.findViewById(R.id.et_player1);
+        mPlayer2 = (EditText) v.findViewById(R.id.et_player2);
+
+        mBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                playerName1 = mPlayer1.getText().toString();
+                playerName2 = mPlayer2.getText().toString();
+                if (!playerName1.isEmpty() && !playerName2.isEmpty()) {
+                    player1.setText(playerName1 + " (X)");
+                    player2.setText(playerName2 + " (O)");
+                    vs.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        mBuilder.show();
+    }
+
+    /*
+    Toggles distraction free mode
+     */
+    public void toggleDistractionFreeMode() {
+        if (!isDistractionFreeMode) {
+            bottomBar.setVisibility(View.GONE);
+            bottomBar2.setVisibility(View.VISIBLE);
+            isDistractionFreeMode = true;
+        } else {
+            bottomBar2.setVisibility(View.GONE);
+            bottomBar.setVisibility(View.VISIBLE);
+            isDistractionFreeMode = false;
+        }
+
     }
 
     /*
