@@ -5,5 +5,11 @@
     <color name="colorPrimaryDark1">#1976D2</color>
     <color name="colorPrimaryDark2">#303F9F</color>
     <color name="colorAccent">#155C91</color>
+    <color name="textColorGray">#757575</color>
+
+    <color name="colorGrayLight">#EEEEEE</color>
+    <color name="colorGrayMedium">#424242</color>
+    <color name="colorGrayDark">#212121</color>
+
 
 </resources>

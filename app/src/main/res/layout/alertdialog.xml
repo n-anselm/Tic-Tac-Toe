@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="?attr/colorDialog"
     android:orientation="vertical"
     android:paddingLeft="16dp"
     android:paddingTop="8dp"
@@ -15,7 +15,7 @@
         android:paddingTop="4dp"
         android:text="Player Names"
         android:textAllCaps="true"
-        android:textColor="#212121"
+        android:textColor="?attr/textColor1"
         android:textSize="18sp" />
 
     <TextView
@@ -24,7 +24,7 @@
         android:layout_marginLeft="48dp"
         android:layout_marginTop="8dp"
         android:text="Player 1"
-        android:textColor="@color/colorPrimary2"
+        android:textColor="?attr/textColorBlue"
         android:textSize="16dp" />
 
     <LinearLayout
@@ -36,7 +36,7 @@
             android:layout_height="32dp"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="16dp"
-            android:src="@drawable/x_black" />
+            android:src="?attr/iconX" />
 
         <EditText
             android:id="@+id/et_player1"
@@ -57,7 +57,7 @@
         android:layout_marginLeft="48dp"
         android:layout_marginTop="8dp"
         android:text="Player 2"
-        android:textColor="@color/colorPrimary2"
+        android:textColor="?attr/textColorBlue"
         android:textSize="16dp" />
 
     <LinearLayout
@@ -69,7 +69,7 @@
             android:layout_height="32dp"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="16dp"
-            android:src="@drawable/o_black" />
+            android:src="?attr/iconO" />
 
         <EditText
             android:id="@+id/et_player2"

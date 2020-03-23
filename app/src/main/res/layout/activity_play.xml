@@ -3,15 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="?attr/colorBackground"
     android:orientation="vertical"
-    tools:context=".SplashScreen">
+    tools:context=".PlayActivity">
 
     <RelativeLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="72dp"
-        android:background="@android:color/white">
+        android:background="?attr/colorBackground">
 
         <TextView
             android:layout_width="match_parent"
@@ -20,7 +20,7 @@
             android:gravity="center"
             android:text="Tic Tac Toe"
             android:textAllCaps="true"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/textColor1"
             android:textSize="36sp" />
 
     </RelativeLayout>
@@ -41,7 +41,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text=""
-                android:textColor="@color/colorPrimary2"
+                android:textColor="?attr/textColorBlue"
                 android:textSize="18sp" />
 
             <TextView
@@ -50,6 +50,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text=" vs "
+                android:textColor="?attr/textColor2"
                 android:textSize="18sp"
                 android:visibility="invisible" />
 
@@ -59,7 +60,7 @@
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:text=""
-                android:textColor="@color/colorPrimary2"
+                android:textColor="?attr/textColorBlue"
                 android:textSize="18sp" />
 
         </LinearLayout>
@@ -77,7 +78,7 @@
             android:layout_width="300dp"
             android:layout_height="300dp"
             android:layout_marginTop="32dp"
-            android:background="@drawable/grid_blue"
+            android:background="?attr/grid"
             android:orientation="vertical">
 
             <LinearLayout
@@ -229,7 +230,6 @@
         android:layout_height="24dp">
 
 
-
     </LinearLayout>
 
     <RelativeLayout
@@ -237,7 +237,7 @@
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginTop="64dp"
-        android:background="#EEEEEE">
+        android:background="?attr/colorGray">
 
         <TextView
             android:id="@+id/tv_new_game"
@@ -251,7 +251,7 @@
             android:paddingRight="8dp"
             android:text="New game"
             android:textAllCaps="true"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/textColor1"
             android:textSize="16sp" />
 
         <TextView
@@ -267,7 +267,7 @@
             android:paddingRight="8dp"
             android:text="Reset"
             android:textAllCaps="true"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/textColor1"
             android:textSize="16sp" />
 
         <FrameLayout
@@ -283,7 +283,7 @@
                 android:layout_height="32dp"
                 android:layout_gravity="center"
                 android:layout_marginRight="4dp"
-                android:src="@drawable/ic_chevron_up_black" />
+                android:src="?attr/optionsArrow" />
 
         </FrameLayout>
 
@@ -309,7 +309,7 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_chevron_up_black" />
+                android:src="?attr/optionsArrow" />
 
         </FrameLayout>
 

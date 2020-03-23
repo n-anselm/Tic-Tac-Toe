@@ -19,6 +19,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ContextThemeWrapper;
 
+import com.appizona.yehiahd.fastsave.FastSave;
+
 public class PlayActivity extends AppCompatActivity {
 
     EditText mPlayer1, mPlayer2;
@@ -41,11 +43,17 @@ public class PlayActivity extends AppCompatActivity {
     private LayoutInflater inflater;
     RelativeLayout bottomBar, bottomBar2;
     FrameLayout optionsArrowUp, optionsArrowUp2;
-    boolean isDistractionFreeMode = false;
+    boolean isDistractionFreeMode;
+
+    public static final String DARKMODE = "darkmode";
+    public static final String RESTART = "restart";
+    public static final String DISTRACTIONFREEMODE = "distractionfreemode";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FastSave.init(getApplicationContext()); // Initialize FastSave - Reference: "https://github.com/yehiahd/FastSave-Android"
+        checkTheme();
         setContentView(R.layout.activity_play);
 
         player1 = findViewById(R.id.tv_player1);
@@ -87,9 +95,16 @@ public class PlayActivity extends AppCompatActivity {
                         int id = item.getItemId();
                         if (id == R.id.action_setchange_player_names) { // Set/change player names
                             alertDialog();
-                            return true;
                         } else if (id == R.id.action_dark_mode) { // Dark mode
-
+                            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                                FastSave.getInstance().saveBoolean(DARKMODE, false);
+                                FastSave.getInstance().saveBoolean(RESTART, true);
+                            } else {
+                                FastSave.getInstance().saveBoolean(DARKMODE, true);
+                                FastSave.getInstance().saveBoolean(RESTART, true);
+                            }
+                            Intent restart = new Intent(PlayActivity.this, PlayActivity.class);
+                            startActivity(restart);
                         } else if (id == R.id.action_normal_mode) { // Distraction free mode
                             toggleDistractionFreeMode();
                         } else if (id == R.id.action_about) {
@@ -123,7 +138,15 @@ public class PlayActivity extends AppCompatActivity {
                             alertDialog();
                             return true;
                         } else if (id == R.id.action_dark_mode) { // Dark mode
-
+                            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                                FastSave.getInstance().saveBoolean(DARKMODE, false);
+                                FastSave.getInstance().saveBoolean(RESTART, true);
+                            } else {
+                                FastSave.getInstance().saveBoolean(DARKMODE, true);
+                                FastSave.getInstance().saveBoolean(RESTART, true);
+                            }
+                            Intent restart = new Intent(PlayActivity.this, PlayActivity.class);
+                            startActivity(restart);
                         } else if (id == R.id.action_normal_mode) { // Distraction free mode
                             toggleDistractionFreeMode();
                         } else if (id == R.id.action_reset) {
@@ -143,12 +166,12 @@ public class PlayActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!i1 && !gameOver) {
                     if (xo.equals("o")) {
-                        iv1.setImageResource(R.drawable.x_black);
+                        setX(1);
                         xo = "x";
                         x1 = 1;
                         checkIfThreeInRow();
                     } else if (xo.equals("x")) {
-                        iv1.setImageResource(R.drawable.o_black);
+                        setO(1);
                         xo = "o";
                         x1 = 2;
                     }
@@ -163,11 +186,11 @@ public class PlayActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!i2 && !gameOver) {
                     if (xo.equals("o")) {
-                        iv2.setImageResource(R.drawable.x_black);
+                        setX(2);
                         xo = "x";
                         x2 = 1;
                     } else if (xo.equals("x")) {
-                        iv2.setImageResource(R.drawable.o_black);
+                        setO(2);
                         xo = "o";
                         x2 = 2;
                     }
@@ -182,11 +205,11 @@ public class PlayActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!i3 && !gameOver) {
                     if (xo.equals("o")) {
-                        iv3.setImageResource(R.drawable.x_black);
+                        setX(3);
                         xo = "x";
                         x3 = 1;
                     } else if (xo.equals("x")) {
-                        iv3.setImageResource(R.drawable.o_black);
+                        setO(3);
                         xo = "o";
                         x3 = 2;
                     }
@@ -201,11 +224,11 @@ public class PlayActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!i4 && !gameOver) {
                     if (xo.equals("o")) {
-                        iv4.setImageResource(R.drawable.x_black);
+                        setX(4);
                         xo = "x";
                         x4 = 1;
                     } else if (xo.equals("x")) {
-                        iv4.setImageResource(R.drawable.o_black);
+                        setO(4);
                         xo = "o";
                         x4 = 2;
                     }
@@ -220,11 +243,11 @@ public class PlayActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!i5 && !gameOver) {
                     if (xo.equals("o")) {
-                        iv5.setImageResource(R.drawable.x_black);
+                        setX(5);
                         xo = "x";
                         x5 = 1;
                     } else if (xo.equals("x")) {
-                        iv5.setImageResource(R.drawable.o_black);
+                        setO(5);
                         xo = "o";
                         x5 = 2;
                     }
@@ -239,11 +262,11 @@ public class PlayActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!i6 && !gameOver) {
                     if (xo.equals("o")) {
-                        iv6.setImageResource(R.drawable.x_black);
+                        setX(6);
                         xo = "x";
                         x6 = 1;
                     } else if (xo.equals("x")) {
-                        iv6.setImageResource(R.drawable.o_black);
+                        setO(6);
                         xo = "o";
                         x6 = 2;
                     }
@@ -258,11 +281,11 @@ public class PlayActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!i7 && !gameOver) {
                     if (xo.equals("o")) {
-                        iv7.setImageResource(R.drawable.x_black);
+                        setX(7);
                         xo = "x";
                         x7 = 1;
                     } else if (xo.equals("x")) {
-                        iv7.setImageResource(R.drawable.o_black);
+                        setO(7);
                         xo = "o";
                         x7 = 2;
                     }
@@ -277,11 +300,11 @@ public class PlayActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!i8 && !gameOver) {
                     if (xo.equals("o")) {
-                        iv8.setImageResource(R.drawable.x_black);
+                        setX(8);
                         xo = "x";
                         x8 = 1;
                     } else if (xo.equals("x")) {
-                        iv8.setImageResource(R.drawable.o_black);
+                        setO(8);
                         xo = "o";
                         x8 = 2;
                     }
@@ -296,11 +319,11 @@ public class PlayActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (!i9 && !gameOver) {
                     if (xo.equals("o")) {
-                        iv9.setImageResource(R.drawable.x_black);
+                        setX(9);
                         xo = "x";
                         x9 = 1;
                     } else if (xo.equals("x")) {
-                        iv9.setImageResource(R.drawable.o_black);
+                        setO(9);
                         xo = "o";
                         x9 = 2;
                     }
@@ -317,7 +340,7 @@ public class PlayActivity extends AppCompatActivity {
                 reset();
             }
         });
-
+        // Start a new game
         newGame.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -326,35 +349,50 @@ public class PlayActivity extends AppCompatActivity {
         });
     }
 
+    public void checkTheme() {
+        if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+            setTheme(R.style.AppThemeDark);
+            FastSave.getInstance().saveBoolean(DARKMODE, true);
+        } else {
+            setTheme(R.style.AppTheme);
+            FastSave.getInstance().saveBoolean(DARKMODE, false);
+        }
+    }
+
     public void alertDialog() {
-        inflater = PlayActivity.this.getLayoutInflater();
-        View v = inflater.inflate(R.layout.alertdialog, null);
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(PlayActivity.this);
-        mBuilder.setView(v)
-                .setNeutralButton("Skip", null);
+        if (FastSave.getInstance().getBoolean(RESTART, false)) {
+            FastSave.getInstance().saveBoolean(RESTART, false);
+        } else {
+            inflater = PlayActivity.this.getLayoutInflater();
+            View v = inflater.inflate(R.layout.alertdialog, null);
+            AlertDialog.Builder mBuilder = new AlertDialog.Builder(PlayActivity.this);
+            mBuilder.setView(v)
+                    .setNeutralButton("Skip", null);
 
-        mPlayer1 = (EditText) v.findViewById(R.id.et_player1);
-        mPlayer2 = (EditText) v.findViewById(R.id.et_player2);
+            mPlayer1 = (EditText) v.findViewById(R.id.et_player1);
+            mPlayer2 = (EditText) v.findViewById(R.id.et_player2);
 
-        mBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
-                playerName1 = mPlayer1.getText().toString();
-                playerName2 = mPlayer2.getText().toString();
-                if (!playerName1.isEmpty() && !playerName2.isEmpty()) {
-                    player1.setText(playerName1 + " (X)");
-                    player2.setText(playerName2 + " (O)");
-                    vs.setVisibility(View.VISIBLE);
+            mBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                    playerName1 = mPlayer1.getText().toString();
+                    playerName2 = mPlayer2.getText().toString();
+                    if (!playerName1.isEmpty() && !playerName2.isEmpty()) {
+                        player1.setText(playerName1 + " (X)");
+                        player2.setText(playerName2 + " (O)");
+                        vs.setVisibility(View.VISIBLE);
+                    }
                 }
-            }
-        });
-        mBuilder.show();
+            });
+            mBuilder.show();
+        }
     }
 
     /*
     Toggles distraction free mode
      */
     public void toggleDistractionFreeMode() {
+        isDistractionFreeMode = FastSave.getInstance().getBoolean(DISTRACTIONFREEMODE, false);
         if (!isDistractionFreeMode) {
             bottomBar.setVisibility(View.GONE);
             bottomBar2.setVisibility(View.VISIBLE);
@@ -422,6 +460,122 @@ public class PlayActivity extends AppCompatActivity {
     public void setNewGame() {
         Intent newGame = new Intent(PlayActivity.this, PlayActivity.class);
         startActivity(newGame);
+    }
+
+    public void setX(int number) {
+        if (number == 1) {
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                iv1.setImageResource(R.drawable.x_white);
+            } else {
+                iv1.setImageResource(R.drawable.x_black);
+            }
+        } else if (number == 2) {
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                iv2.setImageResource(R.drawable.x_white);
+            } else {
+                iv2.setImageResource(R.drawable.x_black);
+            }
+        } else if (number == 3) {
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                iv3.setImageResource(R.drawable.x_white);
+            } else {
+                iv3.setImageResource(R.drawable.x_black);
+            }
+        } else if (number == 4) {
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                iv4.setImageResource(R.drawable.x_white);
+            } else {
+                iv4.setImageResource(R.drawable.x_black);
+            }
+        } else if (number == 5) {
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                iv5.setImageResource(R.drawable.x_white);
+            } else {
+                iv5.setImageResource(R.drawable.x_black);
+            }
+        } else if (number == 6) {
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                iv6.setImageResource(R.drawable.x_white);
+            } else {
+                iv6.setImageResource(R.drawable.x_black);
+            }
+        } else if (number == 7) {
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                iv7.setImageResource(R.drawable.x_white);
+            } else {
+                iv7.setImageResource(R.drawable.x_black);
+            }
+        } else if (number == 8) {
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                iv8.setImageResource(R.drawable.x_white);
+            } else {
+                iv8.setImageResource(R.drawable.x_black);
+            }
+        } else if (number == 9) {
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                iv9.setImageResource(R.drawable.x_white);
+            } else {
+                iv9.setImageResource(R.drawable.x_black);
+            }
+        }
+    }
+
+    public void setO(int number) {
+        if (number == 1) {
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                iv1.setImageResource(R.drawable.o_white);
+            } else {
+                iv1.setImageResource(R.drawable.o_black);
+            }
+        } else if (number == 2) {
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                iv2.setImageResource(R.drawable.o_white);
+            } else {
+                iv2.setImageResource(R.drawable.o_black);
+            }
+        } else if (number == 3) {
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                iv3.setImageResource(R.drawable.o_white);
+            } else {
+                iv3.setImageResource(R.drawable.o_black);
+            }
+        } else if (number == 4) {
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                iv4.setImageResource(R.drawable.o_white);
+            } else {
+                iv4.setImageResource(R.drawable.o_black);
+            }
+        } else if (number == 5) {
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                iv5.setImageResource(R.drawable.o_white);
+            } else {
+                iv5.setImageResource(R.drawable.o_black);
+            }
+        } else if (number == 6) {
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                iv6.setImageResource(R.drawable.o_white);
+            } else {
+                iv6.setImageResource(R.drawable.o_black);
+            }
+        } else if (number == 7) {
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                iv7.setImageResource(R.drawable.o_white);
+            } else {
+                iv7.setImageResource(R.drawable.o_black);
+            }
+        } else if (number == 8) {
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                iv8.setImageResource(R.drawable.o_white);
+            } else {
+                iv8.setImageResource(R.drawable.o_black);
+            }
+        } else if (number == 9) {
+            if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                iv9.setImageResource(R.drawable.o_white);
+            } else {
+                iv9.setImageResource(R.drawable.o_black);
+            }
+        }
     }
 
     /*

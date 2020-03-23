@@ -8,8 +8,48 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:statusBarColor">#FFFFFF</item>
         <item name="android:windowLightStatusBar">true</item>
+
+        <item name="colorBackground">@android:color/white</item>
+        <item name="tictactoeImage">@drawable/tictactoe</item>
+        <item name="colorDialog">@android:color/white</item>
+        <item name="colorMenu">@android:color/white</item>
+        <item name="colorGray">@color/colorGrayLight</item>
+        <item name="textColor1">@android:color/black</item>
+        <item name="textColor2">@color/textColorGray</item>
+        <item name="textColorBlue">@color/colorPrimary2</item>
+        <item name="grid">@drawable/grid_blue_dark</item>
+        <item name="optionsArrow">@drawable/ic_chevron_up_black</item>
+        <item name="darkModeLightMode">@string/dark_mode</item>
+        <item name="iconX">@drawable/x_black</item>
+        <item name="iconO">@drawable/o_black</item>
     </style>
 
-    <style name="PopupMenuStyle" parent="Theme.AppCompat.Light.NoActionBar"></style>
+    <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/colorGrayDark</item>
+        <item name="colorPrimaryDark">@color/colorGrayDark</item>
+        <item name="colorAccent">@color/colorPrimary1</item>
+        <item name="android:statusBarColor">#000000</item>
+        <item name="android:windowLightStatusBar">false</item>
+
+        <item name="colorBackground">@android:color/black</item>
+        <item name="tictactoeImage">@drawable/tictactoe_dark</item>
+        <item name="colorDialog">@color/colorGrayMedium</item>
+        <item name="colorMenu">@color/colorGrayDark</item>
+        <item name="colorGray">@color/colorGrayDark</item>
+        <item name="textColor1">@android:color/white</item>
+        <item name="textColor2">@color/textColorGray</item>
+        <item name="textColorBlue">@color/colorPrimary1</item>
+        <item name="grid">@drawable/grid_blue_light</item>
+        <item name="optionsArrow">@drawable/ic_chevron_up_white</item>
+        <item name="darkModeLightMode">@string/light_mode</item>
+        <item name="iconX">@drawable/x_white</item>
+        <item name="iconO">@drawable/o_white</item>
+    </style>
+
+    <style name="PopupMenuStyle" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:textColor">?attr/textColor1</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:itemBackground">?attr/colorDialog</item>
+    </style>
 
 </resources>

@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="?attr/colorBackground"
     android:orientation="vertical">
 
     <LinearLayout
@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.20"
-        android:background="@android:color/white"
+        android:background="?attr/colorBackground"
         android:orientation="vertical">
 
         <TextView
@@ -24,6 +24,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:text="Welcome to"
+            android:textColor="?attr/textColor2"
             android:textSize="24sp" />
 
         <TextView
@@ -35,7 +36,7 @@
             android:gravity="center_horizontal"
             android:text="Tic Tac Toe"
             android:textAllCaps="true"
-            android:textColor="@android:color/black"
+            android:textColor="?attr/textColor1"
             android:textSize="36sp" />
 
     </LinearLayout>
@@ -52,7 +53,7 @@
             android:layout_height="250dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="32dp"
-            android:src="@drawable/tictactoe" />
+            android:src="?attr/tictactoeImage" />
 
     </LinearLayout>
 
