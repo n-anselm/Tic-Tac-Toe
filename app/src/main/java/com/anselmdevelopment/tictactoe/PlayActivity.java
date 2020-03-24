@@ -21,6 +21,10 @@ import androidx.appcompat.view.ContextThemeWrapper;
 
 import com.appizona.yehiahd.fastsave.FastSave;
 
+import safety.com.br.android_shake_detector.core.ShakeCallback;
+import safety.com.br.android_shake_detector.core.ShakeDetector;
+import safety.com.br.android_shake_detector.core.ShakeOptions;
+
 public class PlayActivity extends AppCompatActivity {
 
     EditText mPlayer1, mPlayer2;
@@ -44,6 +48,8 @@ public class PlayActivity extends AppCompatActivity {
     private LayoutInflater inflater;
     RelativeLayout bottomBar;
     FrameLayout optionsArrowUp;
+    boolean namesEmpty = false;
+    private ShakeDetector shakeDetector;
 
     public static final String PLAYER1 = "player1name";
     public static final String PLAYER2 = "player2name";
@@ -53,6 +59,7 @@ public class PlayActivity extends AppCompatActivity {
     public static final String RESTART = "restart";
     public static final String DISTRACTIONFREEMODE = "distractionfreemode";
     public static final String TIMESPLAYED = "timesplayed";
+    public static final String SHAKE = "shake";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,75 +97,162 @@ public class PlayActivity extends AppCompatActivity {
 
                 // Create instance of PopupMenu
                 Context wrapper = new ContextThemeWrapper(PlayActivity.this, R.style.PopupMenuStyle);
-                final PopupMenu popupMenu = new PopupMenu(wrapper, optionsArrowUp);
+                PopupMenu popupMenu = new PopupMenu(wrapper, optionsArrowUp);
 
                 if (!FastSave.getInstance().getBoolean(DISTRACTIONFREEMODE, false)) {
-                    // Inflate the popup menu using xml file
-                    popupMenu.getMenuInflater().inflate(R.menu.menu_main, popupMenu.getMenu());
+                    if (FastSave.getInstance().getBoolean(SHAKE, false)) {
+                        // Inflate the popup menu using xml file
+                        popupMenu.getMenuInflater().inflate(R.menu.menu_main1_0, popupMenu.getMenu());
 
-                    // Register popup with OnMenuItemClickListener
-                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            int id = item.getItemId();
-                            if (id == R.id.action_setchange_player_names) { // Set/change player names
-                                alertDialog();
-                            } else if (id == R.id.action_dark_mode) { // Dark mode
-                                if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
-                                    FastSave.getInstance().saveBoolean(DARKMODE, false);
-                                    FastSave.getInstance().saveBoolean(RESTART, true);
-                                } else {
-                                    FastSave.getInstance().saveBoolean(DARKMODE, true);
-                                    FastSave.getInstance().saveBoolean(RESTART, true);
+                        // Register popup with OnMenuItemClickListener
+                        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                int id = item.getItemId();
+                                if (id == R.id.action_setchange_player_names) { // Set/change player names
+                                    alertDialog();
+                                } else if (id == R.id.action_shake) {
+                                    toggleShake();
+                                } else if (id == R.id.action_dark_mode) { // Dark mode
+                                    if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                                        FastSave.getInstance().saveBoolean(DARKMODE, false);
+                                        FastSave.getInstance().saveBoolean(RESTART, true);
+                                    } else {
+                                        FastSave.getInstance().saveBoolean(DARKMODE, true);
+                                        FastSave.getInstance().saveBoolean(RESTART, true);
+                                    }
+                                    Intent restart = new Intent(PlayActivity.this, PlayActivity.class);
+                                    startActivity(restart);
+                                } else if (id == R.id.action_normal_mode) { // Distraction free mode
+                                    toggleDistractionFreeMode();
+                                } else if (id == R.id.action_about) {
+                                    Intent aboutActivity = new Intent(PlayActivity.this, AboutActivity.class);
+                                    startActivity(aboutActivity);
                                 }
-                                Intent restart = new Intent(PlayActivity.this, PlayActivity.class);
-                                startActivity(restart);
-                            } else if (id == R.id.action_normal_mode) { // Distraction free mode
-                                toggleDistractionFreeMode();
-                            } else if (id == R.id.action_about) {
-                                Intent aboutActivity = new Intent(PlayActivity.this, AboutActivity.class);
-                                startActivity(aboutActivity);
+                                return false;
                             }
-                            return false;
-                        }
-                    });
+                        });
+                    } else {
+                        popupMenu.getMenuInflater().inflate(R.menu.menu_main1_1, popupMenu.getMenu());
+
+                        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                int id = item.getItemId();
+                                if (id == R.id.action_setchange_player_names) { // Set/change player names
+                                    alertDialog();
+                                } else if (id == R.id.action_shake) {
+                                    toggleShake();
+                                } else if (id == R.id.action_dark_mode) { // Dark mode
+                                    if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                                        FastSave.getInstance().saveBoolean(DARKMODE, false);
+                                        FastSave.getInstance().saveBoolean(RESTART, true);
+                                    } else {
+                                        FastSave.getInstance().saveBoolean(DARKMODE, true);
+                                        FastSave.getInstance().saveBoolean(RESTART, true);
+                                    }
+                                    Intent restart = new Intent(PlayActivity.this, PlayActivity.class);
+                                    startActivity(restart);
+                                } else if (id == R.id.action_normal_mode) { // Distraction free mode
+                                    toggleDistractionFreeMode();
+                                } else if (id == R.id.action_about) {
+                                    Intent aboutActivity = new Intent(PlayActivity.this, AboutActivity.class);
+                                    startActivity(aboutActivity);
+                                }
+                                return false;
+                            }
+                        });
+                    }
                 } else {
-                    // Inflate the popup menu using xml file
-                    popupMenu.getMenuInflater().inflate(R.menu.menu_main2, popupMenu.getMenu());
+                    if (FastSave.getInstance().getBoolean(SHAKE, false)) {
+                        popupMenu.getMenuInflater().inflate(R.menu.menu_main2_0, popupMenu.getMenu());
 
-                    // Register popup with OnMenuItemClickListener
-                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                        @Override
-                        public boolean onMenuItemClick(MenuItem item) {
-                            int id = item.getItemId();
-                            if (id == R.id.action_setchange_player_names) { // Set/change player names
-                                alertDialog();
-                                return true;
-                            } else if (id == R.id.action_dark_mode) { // Dark mode
-                                if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
-                                    FastSave.getInstance().saveBoolean(DARKMODE, false);
-                                    FastSave.getInstance().saveBoolean(RESTART, true);
-                                } else {
-                                    FastSave.getInstance().saveBoolean(DARKMODE, true);
-                                    FastSave.getInstance().saveBoolean(RESTART, true);
+                        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                int id = item.getItemId();
+                                if (id == R.id.action_setchange_player_names) { // Set/change player names
+                                    alertDialog();
+                                    return true;
+                                } else if (id == R.id.action_shake) {
+                                    toggleShake();
+                                } else if (id == R.id.action_dark_mode) { // Dark mode
+                                    if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                                        FastSave.getInstance().saveBoolean(DARKMODE, false);
+                                        FastSave.getInstance().saveBoolean(RESTART, true);
+                                    } else {
+                                        FastSave.getInstance().saveBoolean(DARKMODE, true);
+                                        FastSave.getInstance().saveBoolean(RESTART, true);
+                                    }
+                                    Intent restart = new Intent(PlayActivity.this, PlayActivity.class);
+                                    startActivity(restart);
+                                } else if (id == R.id.action_normal_mode) { // Distraction free mode
+                                    toggleDistractionFreeMode();
+                                } else if (id == R.id.action_reset) {
+                                    reset();
+                                } else if (id == R.id.action_new_game) {
+                                    FastSave.getInstance().saveInt(SCORE1, 0);
+                                    FastSave.getInstance().saveInt(SCORE2, 0);
+                                    FastSave.getInstance().saveInt(TIMESPLAYED, 0);
+                                    setNewGame();
                                 }
-                                Intent restart = new Intent(PlayActivity.this, PlayActivity.class);
-                                startActivity(restart);
-                            } else if (id == R.id.action_normal_mode) { // Distraction free mode
-                                toggleDistractionFreeMode();
-                            } else if (id == R.id.action_reset) {
-                                reset();
-                            } else if (id == R.id.action_new_game) {
-                                FastSave.getInstance().saveInt(SCORE1, 0);
-                                FastSave.getInstance().saveInt(SCORE2, 0);
-                                FastSave.getInstance().saveInt(TIMESPLAYED, 0);
-                                setNewGame();
+                                return false;
                             }
-                            return false;
-                        }
-                    });
+                        });
+                    } else {
+                        popupMenu.getMenuInflater().inflate(R.menu.menu_main2_1, popupMenu.getMenu());
+
+                        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                            @Override
+                            public boolean onMenuItemClick(MenuItem item) {
+                                int id = item.getItemId();
+                                if (id == R.id.action_setchange_player_names) { // Set/change player names
+                                    alertDialog();
+                                    return true;
+                                } else if (id == R.id.action_shake) {
+                                    toggleShake();
+                                } else if (id == R.id.action_dark_mode) { // Dark mode
+                                    if (FastSave.getInstance().getBoolean(DARKMODE, false)) {
+                                        FastSave.getInstance().saveBoolean(DARKMODE, false);
+                                        FastSave.getInstance().saveBoolean(RESTART, true);
+                                    } else {
+                                        FastSave.getInstance().saveBoolean(DARKMODE, true);
+                                        FastSave.getInstance().saveBoolean(RESTART, true);
+                                    }
+                                    Intent restart = new Intent(PlayActivity.this, PlayActivity.class);
+                                    startActivity(restart);
+                                } else if (id == R.id.action_normal_mode) { // Distraction free mode
+                                    toggleDistractionFreeMode();
+                                } else if (id == R.id.action_reset) {
+                                    reset();
+                                } else if (id == R.id.action_new_game) {
+                                    FastSave.getInstance().saveInt(SCORE1, 0);
+                                    FastSave.getInstance().saveInt(SCORE2, 0);
+                                    FastSave.getInstance().saveInt(TIMESPLAYED, 0);
+                                    setNewGame();
+                                }
+                                return false;
+                            }
+                        });
+                    }
                 }
                 popupMenu.show();
+            }
+        });
+
+        // Settings for shake
+        ShakeOptions shakeOptions = new ShakeOptions()
+                .background(false)
+                .interval(650)
+                .shakeCount(2)
+                .sensibility(2.0f);
+
+        this.shakeDetector = new ShakeDetector(shakeOptions).start(this, new ShakeCallback() {
+            @Override
+            public void onShake() {
+                if (FastSave.getInstance().getBoolean(SHAKE, false)) {
+                    reset();
+                }
             }
         });
 
@@ -369,11 +463,27 @@ public class PlayActivity extends AppCompatActivity {
             inflater = PlayActivity.this.getLayoutInflater();
             View v = inflater.inflate(R.layout.alertdialog, null);
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(PlayActivity.this);
-            mBuilder.setView(v)
-                    .setNeutralButton("Skip", null);
+            mBuilder.setView(v);
 
             mPlayer1 = (EditText) v.findViewById(R.id.et_player1);
             mPlayer2 = (EditText) v.findViewById(R.id.et_player2);
+
+            FrameLayout clearName1 = v.findViewById(R.id.fl_name1_clear);
+            FrameLayout clearName2 = v.findViewById(R.id.fl_name2_clear);
+
+            clearName1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mPlayer1.setText(null);
+                }
+            });
+
+            clearName2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mPlayer2.setText(null);
+                }
+            });
 
             String p1 = FastSave.getInstance().getString(PLAYER1, "");
             String p2 = FastSave.getInstance().getString(PLAYER2, "");
@@ -381,6 +491,15 @@ public class PlayActivity extends AppCompatActivity {
                 mPlayer1.setText(p1);
                 mPlayer2.setText(p2);
             }
+
+            mBuilder.setNeutralButton("Skip", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    FastSave.getInstance().saveString(PLAYER1, "");
+                    FastSave.getInstance().saveString(PLAYER2, "");
+                    namesEmpty = true;
+                }
+            });
 
             mBuilder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
@@ -394,10 +513,12 @@ public class PlayActivity extends AppCompatActivity {
                         player1.setText(playerName1 + " (X)");
                         player2.setText(playerName2 + " (O)");
                         vs.setVisibility(View.VISIBLE);
+                        namesEmpty = false;
                     } else if (playerName1.isEmpty()) {
                         player1.setText(null);
                         player2.setText(null);
                         vs.setVisibility(View.GONE);
+                        namesEmpty = true;
                     }
                     score1.setText(null);
                     score2.setText(null);
@@ -443,11 +564,21 @@ public class PlayActivity extends AppCompatActivity {
             }
             FastSave.getInstance().saveBoolean(DISTRACTIONFREEMODE, true);
         } else {
-            player1.setText(FastSave.getInstance().getString(PLAYER1, "") + " (X)");
-            player2.setText(FastSave.getInstance().getString(PLAYER2, "") + " (O)");
-            player1.setVisibility(View.VISIBLE);
-            player2.setVisibility(View.VISIBLE);
-            vs.setVisibility(View.VISIBLE);
+            if (namesEmpty) {
+//                player1.setText(FastSave.getInstance().getString(PLAYER1, "") + " (X)");
+//                player2.setText(FastSave.getInstance().getString(PLAYER2, "") + " (O)");
+                player1.setVisibility(View.VISIBLE);
+                player2.setVisibility(View.VISIBLE);
+                vs.setVisibility(View.GONE);
+            } else {
+                player1.setText(FastSave.getInstance().getString(PLAYER1, "") + " (X)");
+                player1.setVisibility(View.VISIBLE);
+                vs.setVisibility(View.VISIBLE);
+                player2.setText(FastSave.getInstance().getString(PLAYER2, "") + " (O)");
+                player2.setVisibility(View.VISIBLE);
+            }
+//            player1.setVisibility(View.VISIBLE);
+//            player2.setVisibility(View.VISIBLE);
             reset.setVisibility(View.VISIBLE);
             newGame.setVisibility(View.VISIBLE);
             score1.setVisibility(View.VISIBLE);
@@ -458,6 +589,14 @@ public class PlayActivity extends AppCompatActivity {
                 bottomBar.setBackgroundResource(R.color.colorGrayLight);
             }
             FastSave.getInstance().saveBoolean(DISTRACTIONFREEMODE, false);
+        }
+    }
+
+    private void toggleShake() {
+        if (!FastSave.getInstance().getBoolean(SHAKE, false)) {
+            FastSave.getInstance().saveBoolean(SHAKE, true);
+        } else {
+            FastSave.getInstance().saveBoolean(SHAKE, false);
         }
     }
 

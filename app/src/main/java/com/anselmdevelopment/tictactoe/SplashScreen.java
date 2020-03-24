@@ -1,8 +1,10 @@
 package com.anselmdevelopment.tictactoe;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,6 +22,7 @@ public class SplashScreen extends AppCompatActivity {
         FastSave.init(getApplicationContext()); // Initialize FastSave - Reference: "https://github.com/yehiahd/FastSave-Android"
         checkTheme();
         setContentView(R.layout.splashscreen);
+        hideNavigationBar();
 
         //Splash Screen duration
         int secondsDelayed = 1;
@@ -43,6 +46,18 @@ public class SplashScreen extends AppCompatActivity {
         } else {
             setTheme(R.style.AppTheme);
             FastSave.getInstance().saveBoolean(DARKMODE, false);
+        }
+    }
+
+    public void hideNavigationBar() {
+        if(Build.VERSION.SDK_INT < 19){
+            View v = this.getWindow().getDecorView();
+            v.setSystemUiVisibility(View.GONE);
+        } else {
+            // For higher api versions
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            decorView.setSystemUiVisibility(uiOptions);
         }
     }
 }
