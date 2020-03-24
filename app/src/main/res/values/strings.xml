@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Tic Tac Toe</string>
+    <string name="about_app">About Tic Tac Toe</string>
     <string name="dark_mode">Dark mode</string>
     <string name="light_mode">Light mode</string>
 </resources>

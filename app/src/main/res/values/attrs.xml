@@ -13,4 +13,5 @@
     <attr name="darkModeLightMode" format="string"/>
     <attr name="iconX" format="reference" />
     <attr name="iconO" format="reference" />
+    <attr name="aboutBackArrow" format="reference" />
 </resources>

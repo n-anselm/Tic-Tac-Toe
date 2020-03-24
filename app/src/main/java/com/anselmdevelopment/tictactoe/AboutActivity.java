@@ -1,6 +1,8 @@
 package com.anselmdevelopment.tictactoe;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.FrameLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -16,6 +18,14 @@ public class AboutActivity extends AppCompatActivity {
         FastSave.init(getApplicationContext()); // Initialize FastSave - Reference: "https://github.com/yehiahd/FastSave-Android"
         checkTheme();
         setContentView(R.layout.activity_about);
+
+        FrameLayout backArrow = findViewById(R.id.about_back_arrow);
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     public void checkTheme() {

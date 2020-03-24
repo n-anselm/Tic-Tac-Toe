@@ -48,7 +48,6 @@ public class PlayActivity extends AppCompatActivity {
     private LayoutInflater inflater;
     RelativeLayout bottomBar;
     FrameLayout optionsArrowUp;
-    boolean namesEmpty = false;
     private ShakeDetector shakeDetector;
 
     public static final String PLAYER1 = "player1name";
@@ -60,6 +59,7 @@ public class PlayActivity extends AppCompatActivity {
     public static final String DISTRACTIONFREEMODE = "distractionfreemode";
     public static final String TIMESPLAYED = "timesplayed";
     public static final String SHAKE = "shake";
+    public static final String NAMESEMPTY = "namesempty";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -195,6 +195,9 @@ public class PlayActivity extends AppCompatActivity {
                                     FastSave.getInstance().saveInt(SCORE2, 0);
                                     FastSave.getInstance().saveInt(TIMESPLAYED, 0);
                                     setNewGame();
+                                } else if (id == R.id.action_about) {
+                                    Intent aboutActivity = new Intent(PlayActivity.this, AboutActivity.class);
+                                    startActivity(aboutActivity);
                                 }
                                 return false;
                             }
@@ -230,6 +233,9 @@ public class PlayActivity extends AppCompatActivity {
                                     FastSave.getInstance().saveInt(SCORE2, 0);
                                     FastSave.getInstance().saveInt(TIMESPLAYED, 0);
                                     setNewGame();
+                                } else if (id == R.id.action_about) {
+                                    Intent aboutActivity = new Intent(PlayActivity.this, AboutActivity.class);
+                                    startActivity(aboutActivity);
                                 }
                                 return false;
                             }
@@ -497,7 +503,10 @@ public class PlayActivity extends AppCompatActivity {
                 public void onClick(DialogInterface dialog, int which) {
                     FastSave.getInstance().saveString(PLAYER1, "");
                     FastSave.getInstance().saveString(PLAYER2, "");
-                    namesEmpty = true;
+                    FastSave.getInstance().saveBoolean(NAMESEMPTY, true);
+                    player1.setText(null);
+                    player2.setText(null);
+                    vs.setVisibility(View.GONE);
                 }
             });
 
@@ -513,12 +522,12 @@ public class PlayActivity extends AppCompatActivity {
                         player1.setText(playerName1 + " (X)");
                         player2.setText(playerName2 + " (O)");
                         vs.setVisibility(View.VISIBLE);
-                        namesEmpty = false;
+                        FastSave.getInstance().saveBoolean(NAMESEMPTY, false);
                     } else if (playerName1.isEmpty()) {
                         player1.setText(null);
                         player2.setText(null);
                         vs.setVisibility(View.GONE);
-                        namesEmpty = true;
+                        FastSave.getInstance().saveBoolean(NAMESEMPTY, true);
                     }
                     score1.setText(null);
                     score2.setText(null);
@@ -564,9 +573,7 @@ public class PlayActivity extends AppCompatActivity {
             }
             FastSave.getInstance().saveBoolean(DISTRACTIONFREEMODE, true);
         } else {
-            if (namesEmpty) {
-//                player1.setText(FastSave.getInstance().getString(PLAYER1, "") + " (X)");
-//                player2.setText(FastSave.getInstance().getString(PLAYER2, "") + " (O)");
+            if (FastSave.getInstance().getBoolean(NAMESEMPTY, false)) {
                 player1.setVisibility(View.VISIBLE);
                 player2.setVisibility(View.VISIBLE);
                 vs.setVisibility(View.GONE);
@@ -577,8 +584,6 @@ public class PlayActivity extends AppCompatActivity {
                 player2.setText(FastSave.getInstance().getString(PLAYER2, "") + " (O)");
                 player2.setVisibility(View.VISIBLE);
             }
-//            player1.setVisibility(View.VISIBLE);
-//            player2.setVisibility(View.VISIBLE);
             reset.setVisibility(View.VISIBLE);
             newGame.setVisibility(View.VISIBLE);
             score1.setVisibility(View.VISIBLE);

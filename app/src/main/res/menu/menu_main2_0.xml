@@ -40,4 +40,10 @@
         android:orderInCategory="6"
         android:title="New game"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="7"
+        android:title="About app"
+        app:showAsAction="never" />
 </menu>

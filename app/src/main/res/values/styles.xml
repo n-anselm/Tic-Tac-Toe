@@ -22,6 +22,7 @@
         <item name="darkModeLightMode">@string/dark_mode</item>
         <item name="iconX">@drawable/x_black</item>
         <item name="iconO">@drawable/o_black</item>
+        <item name="aboutBackArrow">@drawable/ic_chevron_left_black</item>
     </style>
 
     <style name="AppThemeDark" parent="Theme.AppCompat.NoActionBar">
@@ -44,6 +45,7 @@
         <item name="darkModeLightMode">@string/light_mode</item>
         <item name="iconX">@drawable/x_white</item>
         <item name="iconO">@drawable/o_white</item>
+        <item name="aboutBackArrow">@drawable/ic_chevron_left_white</item>
     </style>
 
     <style name="PopupMenuStyle" parent="Theme.AppCompat.Light.DarkActionBar">
