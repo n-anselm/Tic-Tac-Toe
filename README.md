@@ -1,2 +1,2 @@
 # Tic-Tac-Toe
-For two players
+A simple Tic-Tac-Toe Android app for two players.
